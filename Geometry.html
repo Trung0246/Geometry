@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Geometry</title>
+</head>
+<body>
+<script src="Geometry.js"></script>
+<script>
+    var mirrorLine = Geometry2D.Line.from2P(new Geometry2D.Point(1, 2), new Geometry2D.Point(2, 4));
+    var line = Geometry2D.Line.from2P(new Geometry2D.Point(0, 2), new Geometry2D.Point(6, 3));
+    var reflectedLine = new Geometry2D.Line();
+    line.reflectOver(mirrorLine, reflectedLine);
+    console.log(line.getAngle(mirrorLine), mirrorLine.getAngle(reflectedLine));
+
+    var circle = new Geometry2D.Circle(new Geometry2D.Point(2, 1), 2);
+    var circle_y = circle.getY(1);
+    var tangent1 = circle.getTangent(new Geometry2D.Point(1, -0.7320508075688772));
+    var tangent2 = circle.getTangent(new Geometry2D.Point(1, 2.732050807568877));
+    console.log(tangent1 + '', tangent2 + '');
+</script>
+</body>
+</html>
