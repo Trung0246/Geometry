@@ -75,8 +75,57 @@ Geometry2D.Circle.from2P = function (cp, p) {
     return new Geometry2D.Circle(cp, r);
 };
 
+/**
+ * Create the circle from three point from the circumference of the circle
+ * @param p1 {Geometry2D.Point}
+ * @param p2 {Geometry2D.Point}
+ * @param p3 {Geometry2D.Point}
+ * @return {Geometry2D.Circle}
+ */
 Geometry2D.Circle.from3P = function (p1, p2, p3) {
+    /**
+     * General equation of a circle is:
+     * (x - cx)^2 + (y - cy)^2 = r^2 --- (1)
+     *
+     * Substitute p1, p2, and p3 into eq(1) and get:
+     * (x1 - cx)^2 + (y1 - cy)^2 = r^2 --- (2)
+     * (x2 - cx)^2 + (y2 - cy)^2 = r^2 --- (3)
+     * (x3 - cx)^2 + (y3 - cy)^2 = r^2 --- (4)
+     *
+     * equate (2) and (3)
+     * (x1 - cx)^2 + (y1 - cy)^2 = (x2 - cx)^2 + (y2 - cy)^2
+     * -2 cx x1 + x1^2 + 2 cx x2 - x2^2 - 2 cy y1 + y1^2 + 2 cy y2 - y2^2 = 0
+     * cx = (x1^2 - x2^2 - 2 cy y1 + y1^2 + 2 cy y2 - y2^2)/(2 (x1 - x2)) --- (5)
+     *
+     * equate (2) and (4)
+     * (x1 - cx)^2 + (y1 - cy)^2 = (x3 - cx)^2 + (y3 - cy)^2
+     * -2 cx x1 + x1^2 + 2 cx x3 - x3^2 - 2 cy y1 + y1^2 + 2 cy y3 - y3^2 = 0 --- Substitute (5) and simplify
+     * -x2^2 x3 + x1^2 (-x2 + x3) + x3 (-2 cy y1 + y1^2 + 2 cy y2 - y2^2) + x1 (x2^2 - x3^2 - 2 cy y2 + y2^2 + 2 cy y3
+     *   - y3^2) + x2 (x3^2 + 2 cy y1 - y1^2 - 2 cy y3 + y3^2) = 0 --- Solve cy
+     * cy = (x1^2 x2 - x1 x2^2 - x1^2 x3 + x2^2 x3 + x1 x3^2 - x2 x3^2 + x2 y1^2 - x3 y1^2 - x1 y2^2 + x3 y2^2
+     *   + x1 y3^2 - x2 y3^2)/(2 (x2 y1 - x3 y1 - x1 y2 + x3 y2 + x1 y3 - x2 y3)) --- (6)
+     */
+    var x1 = p1.x;
+    var x2 = p2.x;
+    var x3 = p3.x;
+    var y1 = p1.y;
+    var y2 = p2.y;
+    var y3 = p3.y;
+    var cy = (x1 * x1 * x2 - x1 * x2 * x2 - x1 * x1 * x3 + x2 * x2 * x3 + x1 * x3 * x3 - x2 * x3 * x3 + x2 * y1 * y1 - x3 * y1 * y1 - x1 * y2 * y2 + x3 * y2 * y2 + x1 * y3 * y3 - x2 * y3 * y3) / (2 * (x2 * y1 - x3 * y1 - x1 * y2 + x3 * y2 + x1 * y3 - x2 * y3));
 
+    /**
+     * Substitute cy into (5) get cx
+     * @type {number}
+     */
+    var cx = (x1 * x1 - x2 * x2 - 2 * cy * y1 + y1 * y1 + 2 * cy * y2 - y2 * y2) / (2 * (x1 - x2));
+
+    /**
+     * Substitute cx and cy into eq (2) get r
+     * @type {number}
+     */
+    var r = Math.sqrt((x1 - cx) * (x1 - cx) + (y1 - cy) * (y1 - cy));
+
+    return new Geometry2D.Circle(new Geometry2D.Point(cx, cy), r);
 };
 
 Geometry2D.Circle.prototype = {
